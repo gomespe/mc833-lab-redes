@@ -1,43 +1,111 @@
-#include<stdio.h> 
-#include<stdlib.h>
-#include"lista.h"
+#include <stdio.h> 
+#include <stdlib.h>
+#include <string.h> 
+#include "lista.h"
+#define MAX 8000
   
-/* Function to add a node at the beginning of Linked List. 
-   This function expects a pointer to the data to be added 
-   and size of the data type */
-void push(struct Node** head_ref, void *new_data, size_t data_size) { 
-    // Allocate memory for node 
-    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node)); 
+void push(Perfil** head_ref, char *email, char *nome, char *sobrenome, char *foto, 
+        char *residencia, char *formacaoAcademica, char *habilidades, char *experiencia) { 
+    /* Aloca o no */
+    Perfil* new_node = 
+            (Perfil*) malloc(sizeof(Perfil)); 
   
-    new_node->data  = malloc(data_size); 
+    /* coloca as informacoes de perfil  */
+    strcpy(new_node->email, email); 
+    strcpy(new_node->nome, nome); 
+    strcpy(new_node->sobrenome, sobrenome); 
+    strcpy(new_node->foto, foto); 
+    strcpy(new_node->residencia, residencia); 
+    strcpy(new_node->formacaoAcademica, formacaoAcademica); 
+    strcpy(new_node->habilidades, habilidades); 
+    strcpy(new_node->experiencia, experiencia); 
+  
+    /* coloca o novo no da lista */
     new_node->next = (*head_ref); 
   
-    // Copy contents of new_data to newly allocated memory. 
-    // Assumption: char takes 1 byte. 
-    int i; 
-    for (i=0; i<data_size; i++) 
-        *(char *)(new_node->data + i) = *(char *)(new_data + i); 
-  
-    // Change head pointer as new node is added at the beginning 
-    (*head_ref)    = new_node; 
+    /* Move o no cabeca para o comeco da lista */
+    (*head_ref) = new_node; 
 } 
-  
-/* Function to print nodes in a given linked list. fpitr is used 
-   to access the function to be used for printing current node data. 
-   Note that different data types need different specifier in printf() */
-void printList(struct Node *node, void (*fptr)(void *)) { 
-    while (node != NULL) { 
-        (*fptr)(node->data); 
-        node = node->next; 
+
+char *getPerson(Perfil *head, char *email){
+    Perfil *t;
+    char *r = malloc(sizeof(char)*MAX);
+    t = search(head, email);
+    if (t == NULL)
+        return NULL;
+    r = concatenaPerfil(t);
+    return r;
+}
+
+char *getPersonExp(Perfil *head, char *email){
+    Perfil *t;
+    char *r = malloc(sizeof(char)*MAX);
+    t = search(head, email);
+    if (t == NULL)
+        return NULL;
+    strcpy(r, "Experiencia: ");
+    strcat(r, t->experiencia);
+    strcat(r, "\n");
+    return r;
+}
+
+
+Perfil* search(Perfil* head, char *email) { 
+    Perfil* current = head;
+    while (current != NULL) { 
+        if (strcmp(current->email,  email) == 0) 
+            return current; 
+        current = current->next; 
     } 
-} 
-  
-// Function to print an integer 
-void printInt(void *n) { 
-   printf(" %d", *(int *)n); 
-} 
-  
-// Function to print a float 
-void printFloat(void *f) { 
-   printf(" %f", *(float *)f); 
-} 
+    return NULL; 
+}  
+
+
+void printList(Perfil *node) { 
+    while (node != NULL) { 
+        printPerfil(node);
+        node = node->next; 
+    }
+    printf("\n");
+}
+
+void printPerfil(Perfil *node){
+    printf("Email: %s\n", node->email);
+    printf("Nome: %s\n", node->nome);
+    printf("Sobrenome: %s\n", node->sobrenome);
+    printf("Foto: %s\n", node->foto);
+    printf("Residencia: %s\n", node->residencia);
+    printf("Formacao Academica: %s\n", node->formacaoAcademica);
+    printf("Habilidades: %s\n", node->habilidades);
+    printf("Experiencia: %s\n", node->experiencia);
+}
+
+char *concatenaPerfil(Perfil *node){
+    char *t = malloc(sizeof(char)*MAX);
+    strcat(t, "Email: ");
+    strcat(t, node->email);
+    strcat(t, "\n");
+    strcat(t, "Nome: ");
+    strcat(t, node->nome);
+    strcat(t, " ");
+    strcat(t, "Sobrenome: ");
+    strcat(t, node->sobrenome);
+    strcat(t, "\n");
+    strcat(t, "Foto: ");
+    strcat(t, node->foto);
+    strcat(t, "\n");
+    strcat(t, "Residencia: ");
+    strcat(t, node->residencia);
+    strcat(t, "\n");
+    strcat(t, "Formacao Academica: ");
+    strcat(t, node->formacaoAcademica);
+    strcat(t, "\n");
+    strcat(t, "Hebilidades: ");
+    strcat(t, node->habilidades);
+    strcat(t, "\n");
+    strcat(t, "Experiencia: ");
+    strcat(t, node->experiencia);
+    strcat(t, "\n");
+    return t;
+}
+
