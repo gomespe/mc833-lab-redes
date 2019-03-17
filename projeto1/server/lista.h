@@ -1,23 +1,30 @@
+/* Estrutura de dados*/
 struct Node { 
-    // Any data type can be stored in this node 
-    void  *data; 
+    char email[80], nome[80], sobrenome[80], foto[80], residencia[80], formacaoAcademica[80],
+        habilidades[80], experiencia[80];   
   
     struct Node *next; 
 }; 
-  
+typedef struct Node Perfil;
 
-/* Function to add a node at the beginning of Linked List. 
-   This function expects a pointer to the data to be added 
-   and size of the data type */
-void push(struct Node** head_ref, void *new_data, size_t data_size);
-  
-/* Function to print nodes in a given linked list. fpitr is used 
-   to access the function to be used for printing current node data. 
-   Note that different data types need different specifier in printf() */
-void printList(struct Node *node, void (*fptr)(void *));
+/* Adiciona um no ao inicio da lista*/
+void push(Perfil** head_ref, char *email, char *nome, char *sobrenome, char *foto, 
+        char *residencia, char *formacaoAcademica, char *habilidades, char *experiencia);
 
-// Function to print an integer 
-void printInt(void *n);
-  
-// Function to print a float 
-void printFloat(void *f);
+/* Retorna as informacoes completa do perfil do usuario*/
+char *getPerson(Perfil *head, char *email);
+
+/* Retorna as informacoes de experiencia do usuario*/
+char *getPersonExp(Perfil *head, char *email);
+
+/* Retorna o perfil se achado, NULL caso nao*/
+Perfil* search(Perfil* head, char key[80]);
+
+/* Imprime todos os perfils da lista*/
+void printList(Perfil *node);
+
+/* Imprime um unico perfil*/
+void printPerfil(Perfil *node);
+
+/* Rettorna uma unica string com todos os dados concatenados*/
+char* concatenaPerfil(Perfil *node);
