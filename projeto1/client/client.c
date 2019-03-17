@@ -5,29 +5,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#define MAX 80
+#include <stdio.h>
+
+#define MAX 8000
 #define PORT 8080
 #define SA struct sockaddr
 void func(int sockfd)
 {
     char buff[MAX];
     int n;
+    printf("\n\n");
     for (;;)
     {
         bzero(buff, sizeof(buff));
-        printf("Enter the string : ");
-        n = 0;
-        while ((buff[n++] = getchar()) != '\n')
-            ;
-        write(sockfd, buff, sizeof(buff));
-        bzero(buff, sizeof(buff));
         read(sockfd, buff, sizeof(buff));
-        printf("From Server : %s", buff);
+        printf("From Server : \n%s", buff);
         if ((strncmp(buff, "exit", 4)) == 0)
         {
             printf("Client Exit...\n");
             break;
         }
+        printf("Comando: ");
+        n = 0;
+        while ((buff[n++] = getchar()) != '\n');
+        write(sockfd, buff, sizeof(buff));
+        bzero(buff, sizeof(buff));
     }
 }
 
@@ -49,7 +51,9 @@ int main()
 
     // assign IP, PORT
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr("192.168.15.20");
+    // servaddr.sin_addr.s_addr = inet_addr("192.168.15.20"); //endereço vina
+    // servaddr.sin_addr.s_addr = inet_addr("192.168.15.47"); //endereço pedro
+    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
     servaddr.sin_port = htons(PORT);
 
     // connect the client socket to server socket
