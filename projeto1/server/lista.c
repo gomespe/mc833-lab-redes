@@ -27,28 +27,6 @@ void push(Perfil** head_ref, char *email, char *nome, char *sobrenome, char *fot
     (*head_ref) = new_node; 
 } 
 
-char *getPerson(Perfil *head, char *email){
-    Perfil *t;
-    char *r = malloc(sizeof(char)*MAX);
-    t = search(head, email);
-    if (t == NULL)
-        return NULL;
-    r = concatenaPerfil(t);
-    return r;
-}
-
-char *getPersonExp(Perfil *head, char *email){
-    Perfil *t;
-    char *r = malloc(sizeof(char)*MAX);
-    t = search(head, email);
-    if (t == NULL)
-        return NULL;
-    strcpy(r, "Experiencia: ");
-    strcat(r, t->experiencia);
-    strcat(r, "\n");
-    return r;
-}
-
 
 Perfil* search(Perfil* head, char *email) { 
     Perfil* current = head;
@@ -106,6 +84,72 @@ char *concatenaPerfil(Perfil *node){
     strcat(t, "Experiencia: ");
     strcat(t, node->experiencia);
     strcat(t, "\n");
+    node = node->next;
     return t;
 }
 
+/* 1 - retorna todas as pessoas de um determinado curso */
+Perfil* getPeopleByCourse(Perfil * head, char *formacaoAcademica){
+    Perfil* new_head = NULL;
+    Perfil* cur = head;
+    while (cur != NULL) { 
+        if (strcmp(cur->formacaoAcademica,  formacaoAcademica) == 0) 
+            push(&new_head, cur->email, cur->nome, cur->sobrenome, cur->foto, cur->residencia, cur->formacaoAcademica, cur->habilidades, cur->experiencia); 
+        cur = cur->next; 
+    } 
+    return new_head; 
+}
+
+/* 2 - retorna todas as pessoas de uma determinada Cidade*/
+Perfil* getPeopleByCity(Perfil * head, char *residencia){
+    Perfil* new_head = NULL;
+    Perfil* cur = head;
+    while (cur != NULL) { 
+        if (strcmp(cur->residencia,  residencia) == 0) 
+            push(&new_head, cur->email, cur->nome, cur->sobrenome, cur->foto, cur->residencia, cur->formacaoAcademica, cur->habilidades, cur->experiencia); 
+        cur = cur->next; 
+    } 
+    return new_head; 
+}
+
+/* 3 - Adicina experiencia a um determinado perfil*/
+void addPersonExp(Perfil * head, char *email, char *experiencia){
+    Perfil* person = NULL;
+    person = search(head, email);
+    strcat(person->experiencia, ", ");
+    strcat(person->experiencia, experiencia);
+}
+
+/* 4 - Retorna as informacoes de experiencia do usuario */
+char *getPersonExp(Perfil *head, char *email){
+    Perfil *t;
+    char *r = malloc(sizeof(char)*MAX);
+    t = search(head, email);
+    if (t == NULL)
+        return NULL;
+    strcpy(r, "Experiencia: ");
+    strcat(r, t->experiencia);
+    strcat(r, "\n");
+    return r;
+}   
+
+/* 5 - listar todas as informações de todos os perfis*/
+char *listPeople(Perfil *head){
+    char *t = malloc(sizeof(char)*MAX);
+    Perfil * node = head;
+    while(node){
+        strcat(t, concatenaPerfil(node));
+        node = node->next;
+    }
+    return t;
+}
+/* 6 -  Retorna as informacoes completa do perfil do usuario*/
+char *getPerson(Perfil *head, char *email){
+    Perfil *t;
+    char *r = malloc(sizeof(char)*MAX);
+    t = search(head, email);
+    if (t == NULL)
+        return NULL;
+    r = concatenaPerfil(t);
+    return r;
+}
