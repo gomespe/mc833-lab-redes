@@ -16,22 +16,6 @@ char comandoInvalido[] = "Comando invalido. Por favor tente novamente\n\n";
 Perfil *listaPerfil;
 char buff[MAX];
 
-// void readData(int sockfd, char *buff, int size) {
-//     int count = 0;
-//     while(size) {
-//         count = send(sockfd, buff, size, FLAG);
-        
-//     }
-
-// }
-
-// void sendData(int sockfd, char *msg, int sizeMsg) {
-//     int 
-//     do {
-//         write(sockfd, msg, sizeMsg);
-//     } while ();
-// }
-
 // Funcao lista perfil especifico dado um email
 void listarPerfil(int sockfd) {
     char *resposta;
@@ -40,18 +24,14 @@ void listarPerfil(int sockfd) {
     
     char comando[2];
     read(sockfd, comando, sizeof(comando));
-    printf("\ncomando: %s", comando);
 
     char msg1[] = "Por favor digite email\n";
-    printf("\nmsg1: %s\n", msg1);
     write(sockfd, msg1, sizeof(msg1));
 
     bzero(buff, MAX);
-    printf("\nbuff: %s\n", buff);
     
     // memset(buff,'\0',MAX);
     int flag = read(sockfd, buff, sizeof(buff));
-    printf("\nflag: %d\nleu email: %s\n",flag, buff);
 
     if(strncmp("1", comando, 2) == 0) {
         resposta = getPerson(listaPerfil, buff);
@@ -89,7 +69,6 @@ void conversaComCliente(int sockfd) {
         if (strncmp("1", buff, 2) == 0) {
             // listarTodos();
         } else if (strncmp("2", buff, 2) == 0) {
-            printf("Entrou listarPerfil\n");
             listarPerfil(sockfd);
         } else if (strncmp("3", buff, 2) == 0) {
             
@@ -148,7 +127,7 @@ void createList(char *source) {
 // coloca o banco de dados em cache
 void loadDBInCache() {
     char *source = NULL;
-    FILE *fp = fopen("../cadastros/a.txt", "r+");
+    FILE *fp = fopen("../cadastros/banco.txt", "r+");
     if (fp != NULL) {
         /* vai para o final do arquivo */
         if (fseek(fp, 0L, SEEK_END) == 0) {
