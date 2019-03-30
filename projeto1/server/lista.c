@@ -7,8 +7,7 @@
 void push(Perfil** head_ref, char *email, char *nome, char *sobrenome, char *foto, 
         char *residencia, char *formacaoAcademica, char *habilidades, char *experiencia) { 
     /* Aloca o no */
-    Perfil* new_node = 
-            (Perfil*) malloc(sizeof(Perfil)); 
+    Perfil* new_node = (Perfil*) malloc(sizeof(Perfil)); 
   
     /* coloca as informacoes de perfil  */
     strcpy(new_node->email, email); 
@@ -26,30 +25,6 @@ void push(Perfil** head_ref, char *email, char *nome, char *sobrenome, char *fot
     /* Move o no cabeca para o comeco da lista */
     (*head_ref) = new_node; 
 } 
-
-char *getPerson(Perfil *head, char *email){
-    Perfil *t;
-    char *r = malloc(sizeof(char)*MAX);
-    t = search(head, email);
-    if (t == NULL) {
-        return NULL;
-    }
-    r = concatenaPerfil(t);
-    return r;
-}
-
-char *getPersonExp(Perfil *head, char *email){
-    Perfil *t;
-    char *r = malloc(sizeof(char)*MAX);
-    t = search(head, email);
-    if (t == NULL)
-        return NULL;
-    strcpy(r, "Experiencia: ");
-    strcat(r, t->experiencia);
-    strcat(r, "\n");
-    return r;
-}
-
 
 Perfil* search(Perfil* head, char *email) { 
     Perfil* current = head;
@@ -107,11 +82,7 @@ char *concatenaPerfil(Perfil *node){
     strcat(t, "Experiencia: ");
     strcat(t, node->experiencia);
     strcat(t, "\n");
-<<<<<<< HEAD
-    strcat(t, "\0");
-=======
-    node = node->next;
->>>>>>> 1722177cddda9cfa66fcbca1f12f8b9699a16879
+
     return t;
 }
 
