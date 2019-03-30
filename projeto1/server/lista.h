@@ -1,7 +1,7 @@
 /* Estrutura de dados*/
 struct Node { 
     char email[80], nome[80], sobrenome[80], foto[80], residencia[80], formacaoAcademica[80],
-        habilidades[80], experiencia[80];   
+        habilidades[800], experiencia[800];   
   
     struct Node *next; 
 }; 

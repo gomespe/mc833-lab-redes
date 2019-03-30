@@ -6,70 +6,91 @@
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #include <stdio.h>
+#include "lista.h"
 
 #define MAX 8000 
-#define PORT 8080 
+#define PORT 8001
 #define SA struct sockaddr 
 
 char comandoInvalido[] = "Comando invalido. Por favor tente novamente\n\n";
-listaDosPerfils -> array de struct tipo perfil 
+Perfil *listaPerfil;
+char buff[MAX];
 
-char *listarPerfil() {
+// void readData(int sockfd, char *buff, int size) {
+//     int count = 0;
+//     while(size) {
+//         count = send(sockfd, buff, size, FLAG);
+        
+//     }
+
+// }
+
+// void sendData(int sockfd, char *msg, int sizeMsg) {
+//     int 
+//     do {
+//         write(sockfd, msg, sizeMsg);
+//     } while ();
+// }
+
+// Funcao lista perfil especifico dado um email
+void listarPerfil(int sockfd) {
     char *resposta;
-    char msg2[] = "Voce gostaria de:\n [1] - Perfil completo\n[2] - Somente experiencia\n"
+    char msg2[] = "Voce gostaria de:\n[1] - Perfil completo\n[2] - Somente experiencia\n";
     write(sockfd, msg2, sizeof(msg2));
     
-    char buff[MAX];
-    read(sockfd, buff, sizeof(buff));
+    char comando[2];
+    read(sockfd, comando, sizeof(comando));
+    printf("\ncomando: %s", comando);
 
-    while(1) {
-        char msg1[] = "Por favor digite email\n";
-        write(sockfd, msg1, sizeof(msg1));
+    char msg1[] = "Por favor digite email\n";
+    printf("\nmsg1: %s\n", msg1);
+    write(sockfd, msg1, sizeof(msg1));
 
+    bzero(buff, MAX);
+    printf("\nbuff: %s\n", buff);
+    
+    // memset(buff,'\0',MAX);
+    int flag = read(sockfd, buff, sizeof(buff));
+    printf("\nflag: %d\nleu email: %s\n",flag, buff);
+
+    if(strncmp("1", comando, 2) == 0) {
+        resposta = getPerson(listaPerfil, buff);
+    } else if(strncmp("2", comando, 2) == 0) {
+        resposta = getPersonExp(listaPerfil, buff);
+    } else {
         bzero(buff, MAX);
-        read(sockfd, buff, sizeof(buff));
-
-        if(strncmp("1", buff, 2) == 0) {
-            resposta = getPerson(listaDosPerfils, buff);
-        } else if(strncmp("2", buff, 2) == 0) {
-            resposta = getPersonExp(listDosPerfils, buff);
-        } else {
-            bzero(buff, MAX);
-            strcat(buff, comandoInvalido);
-            continue;
-        }
-
-        // caso email nao tenha sido encontrado
-        if(!resposta) {
-            strcat(resposta, "Email nao encontrado, digite novamente:\n");
-        } else {
-            return resposta;
-        }
+        strcat(buff, comandoInvalido);
+        return;
     }
 
-    return NULL;
+    // caso email nao tenha sido encontrado
+    if(!resposta) {
+        bzero(buff, MAX);
+        strcat(buff, "Email nao encontrado\n\n");
+    } else {
+        bzero(buff, MAX);
+        strcat(buff, resposta);
+    }
 }
-
 
 // Funcao de conversa entra Cliente e Servidor 
 void conversaComCliente(int sockfd) { 
-    char buff[MAX]; 
     int n; 
     char mensagemComandos[] = "O que gostaria de fazer?\n[1] - Listar todos os perfis\n[2] - Listar perfil especifico\n[3] - Acrescentar nova experiencia\n[4] - Listar perfils pelo curso\n[5] - Listar perfils por cidade\n";
     write(sockfd, mensagemComandos, sizeof(mensagemComandos)); 
-    
     // loop infinito de conversa 
     while(1) { 
         bzero(buff, MAX);
 
         // recebe mensagem do cliente e coloca no buff 
         read(sockfd, buff, sizeof(buff)); 
-
+        
         // realiza funcao desejada pelo cliente
         if (strncmp("1", buff, 2) == 0) {
-            listarTodos(&buff);
+            // listarTodos();
         } else if (strncmp("2", buff, 2) == 0) {
-            listarPerfil(&buff);
+            printf("Entrou listarPerfil\n");
+            listarPerfil(sockfd);
         } else if (strncmp("3", buff, 2) == 0) {
             
         } else if (strncmp("4", buff, 2) == 0) {
@@ -86,12 +107,84 @@ void conversaComCliente(int sockfd) {
         write(sockfd, mensagemComandos, sizeof(mensagemComandos));
     } 
 } 
-  
+
+void createList(char *source) {
+    char buff[500];
+    int i=0;
+    char s[2] = ";";
+    char *token;
+    token = strtok(source, s);
+    listaPerfil = NULL;
+    do {
+        char email[80];
+        char nome[80];
+        char sobrenome[80];
+        char foto[80];
+        char residencia[80];
+        char formacaoAcademica[80];
+        char habilidades[800];
+        char experiencia[800];
+        strcpy(email, token);
+        token = strtok(NULL, s);
+        strcpy(nome, token);
+        token = strtok(NULL, s);
+        strcpy(sobrenome, token);
+        token = strtok(NULL, s);
+        strcpy(foto, token);
+        token = strtok(NULL, s);
+        strcpy(residencia, token);
+        token = strtok(NULL, s);
+        strcpy(formacaoAcademica, token);
+        token = strtok(NULL, s);
+        strcpy(habilidades, token);
+        token = strtok(NULL, s);
+        strcpy(experiencia, token);
+        token = strtok(NULL, s);
+        push(&listaPerfil, (char *)email, (char *)nome, (char *)sobrenome, (char *)foto, (char *)residencia, 
+                (char *)formacaoAcademica, (char *)habilidades, (char *)experiencia);
+    } while(token != NULL);
+}
+
+// coloca o banco de dados em cache
+void loadDBInCache() {
+    char *source = NULL;
+    FILE *fp = fopen("../cadastros/a.txt", "r+");
+    if (fp != NULL) {
+        /* vai para o final do arquivo */
+        if (fseek(fp, 0L, SEEK_END) == 0) {
+            /* calcula tamanho do arquivo */
+            long bufsize = ftell(fp);
+            if (bufsize == -1) { printf("-----------------");}
+
+            /* aloca o buffer com o tamanho */
+            source = malloc(sizeof(char) * (bufsize + 1));
+
+            /* reseta para o comeco do arquivo */
+            if (fseek(fp, 0L, SEEK_SET) != 0) {  printf("-----------------"); }
+
+            /* le o arquivo no buffer */
+            size_t newLen = fread(source, sizeof(char), bufsize, fp);
+            if ( ferror( fp ) != 0 ) {
+                fputs("Error reading file", stderr);
+            } else {
+                source[newLen++] = '\0'; /* Just to be safe. */
+            }
+        }
+        fclose(fp);
+    }
+    createList(source);
+    free(source);
+}
+
 int main() { 
     int sockfd, connfd, len; 
-    struct sockaddr_in servaddr, cli; 
+    struct sockaddr_in servaddr, cli;
   
+    // coloca o banco de dados em cache
+    loadDBInCache();
+
     // Criacao do socket e verificacao 
+    bzero(&sockfd, sizeof(sockfd)); 
     sockfd = socket(AF_INET, SOCK_STREAM, 0); 
     if (sockfd == -1) { 
         printf("socket creation failed...\n"); 
@@ -131,7 +224,7 @@ int main() {
     } 
     else
         printf("server acccept the client...\n"); 
-  
+    
     // funcao de conversa entre cliente e servidor 
     conversaComCliente(connfd); 
   

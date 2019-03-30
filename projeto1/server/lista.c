@@ -31,8 +31,9 @@ char *getPerson(Perfil *head, char *email){
     Perfil *t;
     char *r = malloc(sizeof(char)*MAX);
     t = search(head, email);
-    if (t == NULL)
+    if (t == NULL) {
         return NULL;
+    }
     r = concatenaPerfil(t);
     return r;
 }
@@ -106,6 +107,7 @@ char *concatenaPerfil(Perfil *node){
     strcat(t, "Experiencia: ");
     strcat(t, node->experiencia);
     strcat(t, "\n");
+    strcat(t, "\0");
     return t;
 }
 

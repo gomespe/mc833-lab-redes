@@ -1,5 +1,4 @@
 
-// Write CPP code here
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,13 +7,13 @@
 #include <stdio.h>
 
 #define MAX 8000
-#define PORT 8080
+#define PORT 8001
 #define SA struct sockaddr
+
 void func(int sockfd)
 {
     char buff[MAX];
     int n;
-    printf("\n\n");
     for (;;)
     {
         bzero(buff, sizeof(buff));
@@ -26,8 +25,9 @@ void func(int sockfd)
             break;
         }
         printf("Comando: ");
-        n = 0;
-        while ((buff[n++] = getchar()) != '\n');
+        bzero(buff, sizeof(buff));
+        scanf("%s", buff);
+        printf("\nVai mandar: %s\n", buff);
         write(sockfd, buff, sizeof(buff));
         bzero(buff, sizeof(buff));
     }
@@ -51,8 +51,6 @@ int main()
 
     // assign IP, PORT
     servaddr.sin_family = AF_INET;
-    // servaddr.sin_addr.s_addr = inet_addr("192.168.15.20"); //endereço vina
-    // servaddr.sin_addr.s_addr = inet_addr("192.168.15.47"); //endereço pedro
     servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
     servaddr.sin_port = htons(PORT);
 
