@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 #define MAX 8000
-#define PORT 8081
+#define PORT 8080
 #define SA struct sockaddr
 
 char *extraiNome(char *buff){

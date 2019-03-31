@@ -9,7 +9,7 @@
 #include "lista.h"
 
 #define MAX 8000 
-#define PORT 8081
+#define PORT 8080
 #define SA struct sockaddr 
 
 char comandoInvalido[] = "Comando invalido. Por favor tente novamente\n\n";
@@ -46,6 +46,7 @@ void listarPerfil(int sockfd) {
         Perfil *node;
         resposta = getPerson(listaPerfil, buff);
         node = search(listaPerfil, buff);
+        printf("vou abrir em %s\n", node->foto);
         image = fopen(node->foto, "r");
     } else if(strncmp("2", comando, 2) == 0) {
         resposta = getPersonExp(listaPerfil, buff);
@@ -183,6 +184,7 @@ void conversaComCliente(int sockfd) {
             }
             bzero(buff, MAX);
             write(sockfd, buff, sizeof(buff));
+            fclose(image);
             image = NULL;
         }
     } 

@@ -67,9 +67,9 @@ char *concatenaPerfil(Perfil *node){
     strcat(t, "Sobrenome: ");
     strcat(t, node->sobrenome);
     strcat(t, "\n");
-    //strcat(t, "Foto: ");
-    //strcat(t, node->foto);
-    //strcat(t, "\n");
+    strcat(t, "Foto: ");
+    strcat(t, node->foto);
+    strcat(t, "\n");
     strcat(t, "Residencia: ");
     strcat(t, node->residencia);
     strcat(t, "\n");
