@@ -111,7 +111,7 @@ Perfil* getPeopleByCity(Perfil * head, char *residencia){
 }
 
 /* 3 - Adicina experiencia a um determinado perfil*/
-void addPersonExp(Perfil * person, char *email, char *experiencia){
+void addPersonExp(Perfil *person, char *experiencia){
     strcat(person->experiencia, ", ");
     strcat(person->experiencia, experiencia);
 }
@@ -135,6 +135,7 @@ char *listPeople(Perfil *head){
     Perfil * node = head;
     while(node){
         strcat(t, concatenaPerfil(node));
+        strcat(t, "---------\n");
         node = node->next;
     }
     return t;

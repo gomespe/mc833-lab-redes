@@ -30,7 +30,7 @@ Perfil* getPeopleByCourse(Perfil * head, char *formacaoAcademica);
 Perfil* getPeopleByCity(Perfil * head, char *residencia);
 
 /* 3 - Adicina experiencia a um determinado perfil*/
-void addPersonExp(Perfil * person, char *email, char *experiencia);
+void addPersonExp(Perfil *person, char *experiencia);
 
 /* 4 - Retorna as informacoes de experiencia do usuario */
 char* getPersonExp(Perfil *head, char *email);

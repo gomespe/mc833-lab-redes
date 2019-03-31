@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 maria_silva@gmail.com;Maria;Silva;imagem1.png;Campinas;Ciencia da Computacao;Analise de Dados, Internet das Coisas, Computacao em Nuvem;(1) Estagio de 1 anona Empresa X, onde trabalhei como analista de dados (2) Trabalhei com IoT e Computaçao em Nuvem por 5 anos na Empresa Y;pedro_gomes@gmail.com;Pedro;Gomes;imagem2.png;Santo Andre;Medicina;Neurologia, Cardiologia;(1) Cura do cancer;joao_victor@gmail.com;Joao;Victor;imagem3.png;Curitiba;Danca;Ballet, Pirueta, Cabalhota;(1) Circo de Soleio, (2) Semafoto da 2;
+=======
+maria_silva@gmail.com;Maria;Silva;imagem1.png;Campinas;Ciencia da Computacao;Analise de Dados, Internet das Coisas, Computacao em Nuvem;Estagio de 1 anona Empresa X, onde trabalhei como analista de dados,Trabalhei com IoT e Computaçao em Nuvem por 5 anos na Empresa Y;pedro_gomes@gmail.com;Pedro;Gomes;imagem2.png;Santo Andre;Medicina;Neurologia, Cardiologia;Cura do cancer;joao_victor@gmail.com;Joao;Victor;imagem3.png;Curitiba;Danca;Ballet, Pirueta, Cabalhota;Circo de Soleio, Semafoto da 2;
+>>>>>>> 73a412ad29ffea6d98d75ee9e872a2b1fc8cc59d
