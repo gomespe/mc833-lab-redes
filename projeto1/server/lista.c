@@ -111,9 +111,7 @@ Perfil* getPeopleByCity(Perfil * head, char *residencia){
 }
 
 /* 3 - Adicina experiencia a um determinado perfil*/
-void addPersonExp(Perfil * head, char *email, char *experiencia){
-    Perfil* person = NULL;
-    person = search(head, email);
+void addPersonExp(Perfil * person, char *email, char *experiencia){
     strcat(person->experiencia, ", ");
     strcat(person->experiencia, experiencia);
 }
