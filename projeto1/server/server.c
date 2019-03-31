@@ -16,22 +16,29 @@ char comandoInvalido[] = "Comando invalido. Por favor tente novamente\n\n";
 Perfil *listaPerfil;
 char buff[MAX];
 
+void listarTodos() {
+    char *resposta;
+    bzero(buff, MAX);
+    resposta = listPeople(listaPerfil);
+    strcpy(buff, resposta);
+}
+
 // Funcao lista perfil especifico dado um email
 void listarPerfil(int sockfd) {
     char *resposta;
     char msg2[] = "Voce gostaria de:\n[1] - Perfil completo\n[2] - Somente experiencia\n";
     write(sockfd, msg2, sizeof(msg2));
     
-    char comando[2];
+    char comando[2] = "\0\0";
     read(sockfd, comando, sizeof(comando));
-
+    printf("comando: %s\n", comando);
+    
     char msg1[] = "Por favor digite email\n";
     write(sockfd, msg1, sizeof(msg1));
 
-    bzero(buff, MAX);
     
-    // memset(buff,'\0',MAX);
-    int flag = read(sockfd, buff, sizeof(buff));
+    bzero(buff, MAX);
+    read(sockfd, buff, sizeof(buff));
 
     if(strncmp("1", comando, 2) == 0) {
         resposta = getPerson(listaPerfil, buff);
@@ -45,18 +52,94 @@ void listarPerfil(int sockfd) {
 
     // caso email nao tenha sido encontrado
     if(!resposta) {
+        strcpy(buff, "Email nao encontrado\n\n");
+    } else {
+        strcpy(buff, resposta);
+    }
+}
+
+void addExperiencia(int sockfd) {
+    Perfil *pessoa;
+    
+    char msg1[] = "Por favor digite email\n";
+    write(sockfd, msg1, sizeof(msg1));
+
+    bzero(buff, MAX);
+    read(sockfd, buff, sizeof(buff));
+
+    pessoa = search(listaPerfil, buff);
+
+    if(!pessoa) {
+        strcpy(buff, "Email nao encontrado\n\n");
+        return;
+    }
+
+    char msg2[] = "Por favor digite experiencia a ser adicionada\n";
+    write(sockfd, msg2, sizeof(msg2));
+
+    bzero(buff, MAX);
+    read(sockfd, buff, sizeof(buff));
+
+    addPersonExp(pessoa, buff);
+
+    bzero(buff, MAX);
+    strcat(buff, "Atualizacao efetuado com sucesso\n");
+}
+
+void listarPeloCurso(int sockfd) {
+    Perfil *resposta;
+    
+    char msg1[] = "Por favor digite curso\n";
+    write(sockfd, msg1, sizeof(msg1));
+
+    bzero(buff, MAX);
+    read(sockfd, buff, sizeof(buff));
+
+    resposta = getPeopleByCourse(listaPerfil, buff);
+
+    if(!resposta) {
         bzero(buff, MAX);
-        strcat(buff, "Email nao encontrado\n\n");
+        strcat(buff, "Nenhum perfil com este curso foi encontrado\n");
     } else {
         bzero(buff, MAX);
-        strcat(buff, resposta);
+        strcat(buff, "Perfis encontrados:\n");
+        while(resposta){
+            strcat(buff, concatenaPerfil(resposta));
+            strcat(buff, "---------\n");
+            resposta = resposta->next;
+        }
+    }
+}
+
+void listarPelaCidade(int sockfd) {
+    Perfil *resposta;
+    
+    char msg1[] = "Por favor digite cidade\n";
+    write(sockfd, msg1, sizeof(msg1));
+
+    bzero(buff, MAX);
+    read(sockfd, buff, sizeof(buff));
+
+    resposta = getPeopleByCity(listaPerfil, buff);
+
+    if(!resposta) {
+        bzero(buff, MAX);
+        strcat(buff, "Nenhum perfil com esta cidade foi encontrado\n");
+    } else {
+        bzero(buff, MAX);
+        strcat(buff, "Perfis encontrados:\n");
+        while(resposta){
+            strcat(buff, concatenaPerfil(resposta));
+            strcat(buff, "---------\n");
+            resposta = resposta->next;
+        }
     }
 }
 
 // Funcao de conversa entra Cliente e Servidor 
 void conversaComCliente(int sockfd) { 
     int n; 
-    char mensagemComandos[] = "O que gostaria de fazer?\n[1] - Listar todos os perfis\n[2] - Listar perfil especifico\n[3] - Acrescentar nova experiencia\n[4] - Listar perfils pelo curso\n[5] - Listar perfils por cidade\n";
+    char mensagemComandos[] = "O que gostaria de fazer?\n[1] - Listar todos os perfis\n[2] - Listar perfil especifico\n[3] - Acrescentar nova experiencia\n[4] - Listar perfils pelo curso\n[5] - Listar perfils por cidade\n[0] - Sair";
     write(sockfd, mensagemComandos, sizeof(mensagemComandos)); 
     // loop infinito de conversa 
     while(1) { 
@@ -67,15 +150,18 @@ void conversaComCliente(int sockfd) {
         
         // realiza funcao desejada pelo cliente
         if (strncmp("1", buff, 2) == 0) {
-            // listarTodos();
+            listarTodos();
         } else if (strncmp("2", buff, 2) == 0) {
             listarPerfil(sockfd);
         } else if (strncmp("3", buff, 2) == 0) {
-            
+            addExperiencia(sockfd);
         } else if (strncmp("4", buff, 2) == 0) {
-            
+            listarPeloCurso(sockfd);
         } else if (strncmp("5", buff, 2) == 0) {
-        
+            listarPelaCidade(sockfd);
+        } else if (strncmp("0", buff, 2) == 0) {
+            printf("Client Exited...\n");
+            break;
         } else {
             bzero(buff, MAX);
             strcat(buff, comandoInvalido);
@@ -83,7 +169,7 @@ void conversaComCliente(int sockfd) {
 
         // envia mensagem para o cliente
         strcat(buff, mensagemComandos);
-        write(sockfd, mensagemComandos, sizeof(mensagemComandos));
+        write(sockfd, buff, strlen(buff));
     } 
 } 
 

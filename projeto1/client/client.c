@@ -13,22 +13,20 @@
 void func(int sockfd)
 {
     char buff[MAX];
-    int n;
-    for (;;)
-    {
+    while(1){
         bzero(buff, sizeof(buff));
         read(sockfd, buff, sizeof(buff));
-        printf("From Server : \n%s", buff);
-        if ((strncmp(buff, "exit", 4)) == 0)
-        {
+        printf("\n------------------\nFrom Server : \n%s\n", buff);
+        
+        fgets(buff, MAX , stdin);
+        buff[strlen(buff)-1]= '\0';
+        
+        // verifica se o cliente quer sair
+        if ((strcmp(buff, "0")) == 0){
             printf("Client Exit...\n");
             break;
         }
-        printf("Comando: ");
-        bzero(buff, sizeof(buff));
-        scanf("%s", buff);
-        printf("\nVai mandar: %s\n", buff);
-        write(sockfd, buff, sizeof(buff));
+        write(sockfd, buff, strlen(buff));
         bzero(buff, sizeof(buff));
     }
 }
@@ -38,7 +36,7 @@ int main()
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
 
-    // socket create and varification
+    // Criacao do socket e verificacao 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1)
     {
@@ -49,12 +47,12 @@ int main()
         printf("Socket successfully created..\n");
     bzero(&servaddr, sizeof(servaddr));
 
-    // assign IP, PORT
+    // atribuicao de IP e Porta 
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
     servaddr.sin_port = htons(PORT);
 
-    // connect the client socket to server socket
+    // Faz o bind do socket com o IP e verificacao 
     if (connect(sockfd, (SA *)&servaddr, sizeof(servaddr)) != 0)
     {
         printf("connection with the server failed...\n");
@@ -63,9 +61,9 @@ int main()
     else
         printf("connected to the server..\n");
 
-    // function for chat
+    // funcao de conversa
     func(sockfd);
 
-    // close the socket
+    // fecha socket
     close(sockfd);
 }
