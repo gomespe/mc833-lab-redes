@@ -9,12 +9,13 @@
 #include "lista.h"
 
 #define MAX 8000 
-#define PORT 8001
+#define PORT 8081
 #define SA struct sockaddr 
 
 char comandoInvalido[] = "Comando invalido. Por favor tente novamente\n\n";
 Perfil *listaPerfil;
 char buff[MAX];
+FILE *image;
 
 void listarTodos() {
     char *resposta;
@@ -26,12 +27,13 @@ void listarTodos() {
 // Funcao lista perfil especifico dado um email
 void listarPerfil(int sockfd) {
     char *resposta;
+    
+    
     char msg2[] = "Voce gostaria de:\n[1] - Perfil completo\n[2] - Somente experiencia\n";
     write(sockfd, msg2, sizeof(msg2));
     
     char comando[2] = "\0\0";
     read(sockfd, comando, sizeof(comando));
-    printf("comando: %s\n", comando);
     
     char msg1[] = "Por favor digite email\n";
     write(sockfd, msg1, sizeof(msg1));
@@ -41,7 +43,10 @@ void listarPerfil(int sockfd) {
     read(sockfd, buff, sizeof(buff));
 
     if(strncmp("1", comando, 2) == 0) {
+        Perfil *node;
         resposta = getPerson(listaPerfil, buff);
+        node = search(listaPerfil, buff);
+        image = fopen(node->foto, "r");
     } else if(strncmp("2", comando, 2) == 0) {
         resposta = getPersonExp(listaPerfil, buff);
     } else {
@@ -169,7 +174,17 @@ void conversaComCliente(int sockfd) {
 
         // envia mensagem para o cliente
         strcat(buff, mensagemComandos);
-        write(sockfd, buff, strlen(buff));
+        write(sockfd, buff, sizeof(buff));
+        if (image){
+            int nb = fread(buff, 1, sizeof(buff), image);
+            while(!feof(image)){
+                write(sockfd, buff, nb);
+                nb = fread(buff, 1, sizeof(buff), image);
+            }
+            bzero(buff, MAX);
+            write(sockfd, buff, sizeof(buff));
+            image = NULL;
+        }
     } 
 } 
 
@@ -281,18 +296,27 @@ int main() {
         printf("Server listening..\n"); 
     len = sizeof(cli); 
   
-    // Aceita o pacote de dados do cliente e verificacao 
-    connfd = accept(sockfd, (SA*)&cli, &len); 
-    if (connfd < 0) { 
-        printf("server acccept failed...\n"); 
-        exit(0); 
-    } 
-    else
-        printf("server acccept the client...\n"); 
-    
-    // funcao de conversa entre cliente e servidor 
-    conversaComCliente(connfd); 
-  
-    // apos a conversa, fechar o socket 
-    close(sockfd); 
+
+    while(1){
+        // Aceita o pacote de dados do cliente e verificacao 
+        connfd = accept(sockfd, (SA*)&cli, &len); 
+        if (connfd < 0) { 
+            printf("server acccept failed...\n"); 
+            continue; 
+        } 
+        else
+            printf("server acccept the client...\n"); 
+        
+
+        // funcao de conversa entre cliente e servidor 
+        if(!fork()){
+            close(sockfd); 
+            conversaComCliente(connfd);
+            close(connfd);
+            exit(0); 
+        }
+        // apos a conversa, fechar o socket pq o pai nao precisa disso
+        close(connfd); 
+
+    }
 }
