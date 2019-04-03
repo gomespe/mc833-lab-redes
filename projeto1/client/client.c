@@ -1,4 +1,4 @@
-
+#include <sys/time.h>
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +10,18 @@
 #define PORT 8080
 #define SA struct sockaddr
 
+int contador = 0;
+struct timeval start, end;
+
+void startClock () {
+    gettimeofday(&start, NULL);
+}
+
+void stopClock () {
+    gettimeofday(&end, NULL);
+    printf("[%d] Tempo de total: %ld\n", contador, ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)));
+    contador++;
+}
 char *extraiNome(char *buff){
     char *token;
     char s[2] = " ";
@@ -21,11 +33,17 @@ char *extraiNome(char *buff){
 }
 void func(int sockfd){
     int flag = 0;
+    int tempo=0;
     char buff[MAX];
     char *nome;
     while(1){
+
         bzero(buff, sizeof(buff));
         read(sockfd, buff, sizeof(buff));
+        if(tempo) {
+            stopClock();
+            tempo--;
+        }
         printf("\n------------------\nFrom Server : \n%s\n", buff);
         if (flag == 3){
             nome = extraiNome(buff);
@@ -53,6 +71,10 @@ void func(int sockfd){
         else if ((strcmp(buff, "2")) == 0){
             flag = 1;
         }
+
+        startClock();
+        tempo++;
+        
         write(sockfd, buff, strlen(buff));
         bzero(buff, sizeof(buff));
     }   

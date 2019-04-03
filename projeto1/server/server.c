@@ -1,4 +1,4 @@
-
+#include <sys/time.h>
 #include <netdb.h> 
 #include <netinet/in.h> 
 #include <stdlib.h> 
@@ -12,11 +12,13 @@
 #define PORT 8080
 #define SA struct sockaddr 
 
+struct timeval start, end;
+
 char comandoInvalido[] = "Comando invalido. Por favor tente novamente\n\n";
 Perfil *listaPerfil;
 char buff[MAX];
 FILE *image;
-
+int contador = 0;
 void listarTodos() {
     char *resposta;
     bzero(buff, MAX);
@@ -24,24 +26,42 @@ void listarTodos() {
     strcpy(buff, resposta);
 }
 
+void startClock () {
+    gettimeofday(&start, NULL);
+}
+
+void stopClock () {
+    gettimeofday(&end, NULL);
+    printf("[%d] Tempo de consulta: %ld\n", contador, ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)));
+    contador++;
+}
+
 // Funcao lista perfil especifico dado um email
 void listarPerfil(int sockfd) {
     char *resposta;
     
-    
     char msg2[] = "Voce gostaria de:\n[1] - Perfil completo\n[2] - Somente experiencia\n";
+    
+    stopClock();
+    
     write(sockfd, msg2, sizeof(msg2));
     
     char comando[2] = "\0\0";
     read(sockfd, comando, sizeof(comando));
     
+    startClock();
+
     char msg1[] = "Por favor digite email\n";
+    
+    stopClock();
+    
     write(sockfd, msg1, sizeof(msg1));
 
-    
     bzero(buff, MAX);
     read(sockfd, buff, sizeof(buff));
-
+    
+    startClock();
+    
     if(strncmp("1", comando, 2) == 0) {
         Perfil *node;
         resposta = getPerson(listaPerfil, buff);
@@ -68,11 +88,15 @@ void addExperiencia(int sockfd) {
     Perfil *pessoa;
     
     char msg1[] = "Por favor digite email\n";
-    write(sockfd, msg1, sizeof(msg1));
 
+    stopClock();
+    
+    write(sockfd, msg1, sizeof(msg1));
+    
     bzero(buff, MAX);
     read(sockfd, buff, sizeof(buff));
 
+    startClock();
     pessoa = search(listaPerfil, buff);
 
     if(!pessoa) {
@@ -81,10 +105,15 @@ void addExperiencia(int sockfd) {
     }
 
     char msg2[] = "Por favor digite experiencia a ser adicionada\n";
+
+    stopClock();
+
     write(sockfd, msg2, sizeof(msg2));
 
     bzero(buff, MAX);
     read(sockfd, buff, sizeof(buff));
+
+    startClock();
 
     addPersonExp(pessoa, buff);
 
@@ -96,10 +125,15 @@ void listarPeloCurso(int sockfd) {
     Perfil *resposta;
     
     char msg1[] = "Por favor digite curso\n";
+
+    stopClock();
+
     write(sockfd, msg1, sizeof(msg1));
 
     bzero(buff, MAX);
     read(sockfd, buff, sizeof(buff));
+
+    startClock();
 
     resposta = getPeopleByCourse(listaPerfil, buff);
 
@@ -121,10 +155,15 @@ void listarPelaCidade(int sockfd) {
     Perfil *resposta;
     
     char msg1[] = "Por favor digite cidade\n";
+    
+    stopClock();
+
     write(sockfd, msg1, sizeof(msg1));
 
     bzero(buff, MAX);
     read(sockfd, buff, sizeof(buff));
+
+    startClock();
 
     resposta = getPeopleByCity(listaPerfil, buff);
 
@@ -153,7 +192,7 @@ void conversaComCliente(int sockfd) {
 
         // recebe mensagem do cliente e coloca no buff 
         read(sockfd, buff, sizeof(buff)); 
-        
+        startClock();
         // realiza funcao desejada pelo cliente
         if (strncmp("1", buff, 2) == 0) {
             listarTodos();
@@ -173,8 +212,11 @@ void conversaComCliente(int sockfd) {
             strcat(buff, comandoInvalido);
         }
 
-        // envia mensagem para o cliente
         strcat(buff, mensagemComandos);
+        
+        stopClock();
+
+        // envia mensagem para o cliente
         write(sockfd, buff, sizeof(buff));
         if (image){
             int nb = fread(buff, 1, sizeof(buff), image);
