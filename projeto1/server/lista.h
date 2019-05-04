@@ -33,10 +33,10 @@ Perfil* getPeopleByCity(Perfil * head, char *residencia);
 void addPersonExp(Perfil *person, char *experiencia);
 
 /* 4 - Retorna as informacoes de experiencia do usuario */
-char *getPersonExp(Perfil *head, char *email);
+char* getPersonExp(Perfil *head, char *email);
 
 /* 5 - listar todas as informações de todos os perfis, retorna numa string pronta para impressao*/
 char* listPeople(Perfil *head);
 
 /* 6 -  Retorna as informacoes completa do perfil do usuario*/
-char *getPerson(Perfil *head, char *email);
+char* getPerson(Perfil *head, char *email);

@@ -49,7 +49,7 @@ void printPerfil(Perfil *node){
     printf("Email: %s\n", node->email);
     printf("Nome: %s\n", node->nome);
     printf("Sobrenome: %s\n", node->sobrenome);
-    printf("Foto: %s\n", node->foto);
+    //printf("Foto: %s\n", node->foto);
     printf("Residencia: %s\n", node->residencia);
     printf("Formacao Academica: %s\n", node->formacaoAcademica);
     printf("Habilidades: %s\n", node->habilidades);
@@ -135,7 +135,7 @@ char *listPeople(Perfil *head){
     Perfil * node = head;
     while(node){
         strcat(t, concatenaPerfil(node));
-        strcat(t, "---------\n");
+        //strcat(t, "---------\n");
         node = node->next;
     }
     return t;
