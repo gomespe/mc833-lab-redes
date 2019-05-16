@@ -1,5 +1,4 @@
 
-// udp client driver program 
 #include <stdio.h> 
 #include <strings.h> 
 #include <sys/types.h> 
@@ -12,37 +11,41 @@
 #define PORT 5000 
 #define MAXLINE 1000 
   
-// Driver code 
 int main() {    
-    char buffer[100]; 
-    char *message = "Hello Server"; 
+    char buffer[5000]; 
     int sockfd, n; 
     struct sockaddr_in servaddr; 
       
-    // clear servaddr 
     bzero(&servaddr, sizeof(servaddr)); 
     servaddr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
     servaddr.sin_port = htons(PORT); 
     servaddr.sin_family = AF_INET; 
       
-    // create datagram socket 
+    // cria datagram socket 
     sockfd = socket(AF_INET, SOCK_DGRAM, 0); 
       
-    // connect to server 
+    // conecta ao server 
     if(connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0){ 
         printf("\n Error : Connect Failed \n"); 
         exit(0); 
     } 
-  
-    // request to send datagram 
-    // no need to specify server address in sendto 
-    // connect stores the peers IP and port 
-    sendto(sockfd, message, MAXLINE, 0, (struct sockaddr*)NULL, sizeof(servaddr)); 
-      
-    // waiting for response 
+    // envia datagram 
+    sendto(sockfd, "", MAXLINE, 0, (struct sockaddr*)NULL, sizeof(servaddr)); 
+
+    // espera resposta 
+    bzero(&buffer, sizeof(buffer));
     recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL); 
     puts(buffer); 
   
-    // close the descriptor 
+    // envia datagram 
+    char *email = "pedro_gomes@gmail.com";
+    sendto(sockfd, email, MAXLINE, 0, (struct sockaddr*)NULL, sizeof(servaddr)); 
+      
+    // espera resposta 
+    bzero(&buffer, sizeof(buffer));
+    recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL); 
+    puts(buffer); 
+  
+    // fecha descriptor 
     close(sockfd); 
 } 
