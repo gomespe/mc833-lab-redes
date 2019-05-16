@@ -35,11 +35,14 @@ void func(int sockfd){
     int tempo=0;
     char buff[MAX];
     char *nome;
+    int a = 0;
     while(1){
 
         bzero(buff, sizeof(buff));
         read(sockfd, buff, sizeof(buff));
-
+        if(a) {
+            stopClock();
+        }
         printf("\n------------------\nFrom Server : \n%s\n", buff);
         if (flag == 2){
             nome = extraiNome(buff);
@@ -66,7 +69,8 @@ void func(int sockfd){
         else {
             flag += 1;
         }
-        
+        a=1;
+        startClock();
         write(sockfd, buff, strlen(buff));
         bzero(buff, sizeof(buff));
     }   

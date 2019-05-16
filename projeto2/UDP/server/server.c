@@ -136,7 +136,26 @@ int main(){
     }
 
     // envia mensagem 
-    // char *message2 = "aqui esta"; 
     sendto(listenfd, resposta, MAXLINE, 0, 
-          (struct sockaddr*)&cliaddr, sizeof(cliaddr)); 
+          (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+    
+    // //envia imagem
+    // if(image) {
+    //     bzero(&buffer, sizeof(buffer));
+    //     int nb = fread(buffer, 1, sizeof(buffer), image);
+    //     while(!feof(image)){
+    //         sendto(listenfd, buffer, MAXLINE, 0, 
+    //             (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+    //         nb = fread(buffer, 1, sizeof(buffer), image);
+    //     }
+    //     bzero(buffer, 5000);
+    //     sendto(listenfd, buffer, MAXLINE, 0, 
+    //         (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+
+    // } else {
+    //     puts("imagem nao encontrada");
+    // }
+    // fclose(image);
+    
+    
 } 

@@ -1,6 +1,6 @@
 
 #include <stdio.h> 
-#include <strings.h> 
+#include <string.h> 
 #include <sys/types.h> 
 #include <arpa/inet.h> 
 #include <sys/socket.h> 
@@ -9,10 +9,11 @@
 #include<stdlib.h> 
   
 #define PORT 5000 
-#define MAXLINE 1000 
-  
+#define MAXLINE 1000
+#define MAX 8000
+
 int main() {    
-    char buffer[5000]; 
+    char buffer[MAX]; 
     int sockfd, n; 
     struct sockaddr_in servaddr; 
       
@@ -44,8 +45,18 @@ int main() {
     // espera resposta 
     bzero(&buffer, sizeof(buffer));
     recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL); 
-    puts(buffer); 
-  
+    puts(buffer);
+
+    // char *nome = "imagemRecebida";
+    // strcat(nome, ".png");
+    // printf("imagem salva como %s\n", nome);
+    // FILE *image = fopen(nome, "w");
+    // int nb = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL);
+    // while(strlen(buffer) > 0){
+    //     fwrite(buffer, 1, nb, image);
+    //     nb = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL);
+    // }
+    // fclose(image);
     // fecha descriptor 
     close(sockfd); 
-} 
+}

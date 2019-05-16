@@ -90,7 +90,7 @@ char *concatenaFullName(Perfil *node){
     char *t = malloc(sizeof(char)*MAX);
     strcat(t, "Nome: ");
     strcat(t, node->nome);
-    strcat(t, "; ");
+    strcat(t, ";");
     strcat(t, "Sobrenome: ");
     strcat(t, node->sobrenome);
     strcat(t, "\n");

@@ -38,6 +38,7 @@ void listarPerfil(int sockfd) {
     write(sockfd, msg1, sizeof(msg1));
     bzero(buff, MAX);
     read(sockfd, buff, sizeof(buff));
+    startClock();
     
     Perfil *node;
     resposta = getFullName(listaPerfil, buff);
@@ -66,6 +67,7 @@ void conversaComCliente(int sockfd) {
 
         // recebe mensagem do cliente e coloca no buff 
         read(sockfd, buff, sizeof(buff)); 
+        
         // realiza funcao desejada pelo cliente
         if (strncmp("1", buff, 2) == 0) {
             listarPerfil(sockfd);
@@ -78,7 +80,7 @@ void conversaComCliente(int sockfd) {
             strcat(buff, comandoInvalido);
         }
         
-
+        stopClock();
         // envia mensagem para o cliente
         write(sockfd, buff, sizeof(buff));
         if (image){
