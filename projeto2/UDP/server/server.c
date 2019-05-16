@@ -17,6 +17,7 @@ struct timeval start, end;
 Perfil *listaPerfil;
 FILE *image;
 
+
 void createList(char *source) {
     char buff[500];
     int i=0;
@@ -139,23 +140,25 @@ int main(){
     sendto(listenfd, resposta, MAXLINE, 0, 
           (struct sockaddr*)&cliaddr, sizeof(cliaddr));
     
-    // //envia imagem
-    // if(image) {
-    //     bzero(&buffer, sizeof(buffer));
-    //     int nb = fread(buffer, 1, sizeof(buffer), image);
-    //     while(!feof(image)){
-    //         sendto(listenfd, buffer, MAXLINE, 0, 
-    //             (struct sockaddr*)&cliaddr, sizeof(cliaddr));
-    //         nb = fread(buffer, 1, sizeof(buffer), image);
-    //     }
-    //     bzero(buffer, 5000);
-    //     sendto(listenfd, buffer, MAXLINE, 0, 
-    //         (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+    //envia imagem
+    if(image) {
+        bzero(&buffer, sizeof(buffer));
+        int nb = fread(buffer, 1, sizeof(buffer), image);
+        
+        puts(nb);
+        while(!feof(image)){
+            sendto(listenfd, buffer, MAXLINE, 0, 
+                (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+            nb = fread(buffer, 1, sizeof(buffer), image);
+        }
+        bzero(buffer, 5000);
+        sendto(listenfd, buffer, MAXLINE, 0, 
+            (struct sockaddr*)&cliaddr, sizeof(cliaddr));
 
-    // } else {
-    //     puts("imagem nao encontrada");
-    // }
-    // fclose(image);
+    } else {
+        puts("imagem nao encontrada");
+    }
+    fclose(image);
     
     
 } 

@@ -39,7 +39,7 @@ int main() {
     puts(buffer); 
   
     // envia datagram 
-    char *email = "pedro_gomes@gmail.com";
+    char *email = "joao_victor@gmail.com";
     sendto(sockfd, email, MAXLINE, 0, (struct sockaddr*)NULL, sizeof(servaddr)); 
       
     // espera resposta 
@@ -47,16 +47,17 @@ int main() {
     recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL); 
     puts(buffer);
 
-    // char *nome = "imagemRecebida";
-    // strcat(nome, ".png");
-    // printf("imagem salva como %s\n", nome);
-    // FILE *image = fopen(nome, "w");
-    // int nb = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL);
-    // while(strlen(buffer) > 0){
-    //     fwrite(buffer, 1, nb, image);
-    //     nb = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL);
-    // }
-    // fclose(image);
+    char *nome = "joao";
+    strcat(nome, ".png");
+    printf("imagem salva como %s\n", nome);
+    FILE *image = fopen(nome, "w");
+    int nb = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL);
+    while(strlen(buffer) > 0){
+        fwrite(buffer, 1, nb, image);
+        nb = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL);
+    }
+    fclose(image);
+
     // fecha descriptor 
     close(sockfd); 
 }
